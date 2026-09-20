@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>corr</title>
+</head>
+<body>
+<h4>krevetkasofa</h4>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var aStr = params.get('A') || '';
+  var bStr = params.get('B') || '';
+  var a = aStr.split(',').filter(function (s) { return s.length > 0; }).map(Number);
+  var b = bStr.split(',').filter(function (s) { return s.length > 0; }).map(Number);
+
+  function mean(arr) {
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) sum += arr[i];
+    return sum / arr.length;
+  }
+
+  var ma = mean(a);
+  var mb = mean(b);
+
+  var num = 0, da = 0, db = 0;
+  for (var i = 0; i < a.length; i++) {
+    var xa = a[i] - ma;
+    var xb = b[i] - mb;
+    num += xa * xb;
+    da += xa * xa;
+    db += xb * xb;
+  }
+
+  var r = num / Math.sqrt(da * db);
+
+  function formatCorr(value) {
+    if (Math.abs(Math.abs(value) - 1) < 1e-9) {
+      return '1';
+    }
+    var sign = value < 0 ? '-' : '';
+    var abs = Math.abs(value);
+    var truncated = Math.floor(abs * 1000) / 1000;
+    return sign + truncated.toFixed(3);
+  }
+
+  document.title = formatCorr(r);
+})();
+</script>
+</body>
+</html>
